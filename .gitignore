@@ -1,6 +1,8 @@
 venv/
 .env
 my_vector_db/
+chat_metadata.json
+app_settings.json
 __pycache__/
 *.pyc
 .DS_Store

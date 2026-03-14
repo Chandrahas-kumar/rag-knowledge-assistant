@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply antialiased;
+  }
+  body {
+    @apply text-zinc-100 min-h-screen;
+  }
+  html.dark body,
+  html body {
+    @apply bg-zinc-950;
+  }
+  html.light body {
+    @apply bg-zinc-100 text-zinc-900;
+  }
+  html.loki body {
+    @apply bg-gradient-to-br from-zinc-950 via-violet-950/20 to-indigo-950/30;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-zinc-900;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-zinc-600 rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-zinc-500;
+}
