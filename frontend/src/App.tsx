@@ -157,8 +157,12 @@ function App() {
   };
 
   const handleSettingsUpdate = async (s: Partial<Settings>) => {
-    const updated = await updateSettings(s);
-    setSettings(updated);
+    try {
+      const updated = await updateSettings(s);
+      setSettings(updated);
+    } catch {
+      setSettings((prev) => ({ ...prev, ...s }));
+    }
   };
 
   const currentChat = chats.find((c) => c.id === currentChatId);
@@ -174,8 +178,11 @@ function App() {
         onDeleteChat={handleDeleteChat}
         onManageDocs={() => setUploadModalOpen(true)}
         onSettings={() => setSettingsOpen(true)}
-        theme={settings.theme === 'dark' ? 'dark' : 'light'}
-        onThemeToggle={() => handleSettingsUpdate({ theme: settings.theme === 'dark' ? 'light' : 'dark' })}
+        theme={settings.theme === 'dark' ? 'dark' : settings.theme === 'loki' ? 'loki' : 'light'}
+        onThemeToggle={() => {
+          const next = settings.theme === 'dark' ? 'light' : settings.theme === 'light' ? 'loki' : 'dark';
+          handleSettingsUpdate({ theme: next });
+        }}
         mobileOpen={sidebarOpen}
         onMobileClose={() => setSidebarOpen(false)}
       />

@@ -66,6 +66,10 @@ export async function createChat(name = 'New Chat'): Promise<Chat> {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name }),
   });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || `Failed to create chat (${res.status})`);
+  }
   const data = await res.json();
   return { ...data, document_count: 0 };
 }
@@ -104,19 +108,39 @@ export async function uploadDocuments(chatId: string, files: File[]): Promise<{ 
   return res.json();
 }
 
+function parseApiError(text: string): string {
+  try {
+    const o = JSON.parse(text);
+    if (o && typeof o.detail === 'string') return o.detail;
+  } catch {
+    /* ignore */
+  }
+  return text;
+}
+
 export async function query(chatId: string, message: string): Promise<{ answer: string; sources: Source[] }> {
   const res = await fetch(`${API}/chats/${chatId}/query`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message }),
   });
-  if (!res.ok) throw new Error(await res.text());
+  if (!res.ok) throw new Error(parseApiError(await res.text()));
   return res.json();
 }
 
 export async function getSettings(): Promise<Settings> {
   const res = await fetch(`${API}/settings`);
+  if (!res.ok) return getDefaultSettings();
   return res.json();
+}
+
+function getDefaultSettings(): Settings {
+  return {
+    theme: 'dark',
+    n_results: 5,
+    streaming: false,
+    show_citations: true,
+  };
 }
 
 export async function updateSettings(s: Partial<Settings>): Promise<Settings> {
@@ -125,5 +149,6 @@ export async function updateSettings(s: Partial<Settings>): Promise<Settings> {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(s),
   });
+  if (!res.ok) throw new Error(await res.text());
   return res.json();
 }

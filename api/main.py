@@ -258,8 +258,16 @@ def chat_query(chat_id: str, body: QueryRequest):
         # Format sources for frontend: [{file, page}, ...]
         return {"answer": answer, "sources": sources}
     except Exception as e:
-        _last_error = str(e)
-        raise HTTPException(500, str(e))
+        err_msg = str(e)
+        _last_error = err_msg
+        # Return a clear message in the response body so the UI can show it (no stack trace)
+        if "ollama" in err_msg.lower() or "connect" in err_msg.lower():
+            raise HTTPException(
+                503,
+                "Ollama is not running or not reachable. Install from https://ollama.com/download, "
+                "start the app (or run `ollama serve`), then run `ollama pull llama3`.",
+            )
+        raise HTTPException(500, err_msg)
 
 
 # --- System ---

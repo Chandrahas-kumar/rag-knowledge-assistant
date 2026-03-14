@@ -6,6 +6,7 @@ import {
   Cog6ToothIcon,
   SunIcon,
   MoonIcon,
+  SwatchIcon,
   Bars3Icon,
   PencilIcon,
   TrashIcon,
@@ -105,7 +106,7 @@ interface SidebarProps {
   onDeleteChat: (id: string) => void;
   onManageDocs: () => void;
   onSettings: () => void;
-  theme: 'light' | 'dark';
+  theme: 'light' | 'dark' | 'loki';
   onThemeToggle: () => void;
   mobileOpen: boolean;
   onMobileClose: () => void;
@@ -189,10 +190,10 @@ export function Sidebar({
         <button
           onClick={onThemeToggle}
           className="w-full flex items-center gap-2 py-2 px-3 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-zinc-300 text-sm"
-          title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+          title={theme === 'dark' ? 'Light mode' : theme === 'loki' ? 'Dark mode' : 'LOKI theme'}
         >
-          {theme === 'dark' ? <SunIcon className="w-5 h-5" /> : <MoonIcon className="w-5 h-5" />}
-          {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+          {theme === 'dark' ? <SunIcon className="w-5 h-5" /> : theme === 'loki' ? <MoonIcon className="w-5 h-5" /> : <SwatchIcon className="w-5 h-5" />}
+          {theme === 'dark' ? 'Light mode' : theme === 'loki' ? 'Dark mode' : 'LOKI theme'}
         </button>
         <button
           onClick={() => { onSettings(); onMobileClose(); }}
